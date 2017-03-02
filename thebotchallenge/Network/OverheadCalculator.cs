@@ -7,9 +7,9 @@
         private static float blocksizef;
         private static int[] cache;
 
-        public static int BlockSize { get; private set; }
+        internal static int BlockSize { get; private set; }
 
-        public static void PreCalculateOverheads(int length)
+        internal static void PreCalculateOverheads(int length)
         {
             BlockSize = AES_BLOCKSIZE / 8;
             cache = new int[length];
@@ -17,7 +17,7 @@
                 cache[i] = CalculateOverhead(i);
         }
 
-        public static int GetOverhead(int length)
+        internal static int GetOverhead(int length)
         {
             if (length < cache.Length)
                 return cache[length];
