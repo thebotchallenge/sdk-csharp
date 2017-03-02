@@ -9,11 +9,8 @@ namespace Example1
         {
             // Init a new game instance with the using block in order to automatically
             // call Dispose for our object
-            using (Game game = new Game())
+            using (Game game = new Game("zTxyW4q6T_vr"))
             {
-                // Login and change to aes encrypted connection
-                game.Authorize("zTxyW4q6T_vr");
-
                 // Run our GameProcedure method till the game has finished
                 try
                 {
@@ -36,10 +33,10 @@ namespace Example1
             // Get the amount of players in our chunk
             int radar = player.Radar();
 
-            // Get a 3x3 matrix of block types 
+            // Get a 5x5 matrix of block types 
             BlockType[,] aroundMe = player.GetSurrounding();
-            // If there is a player at our right we attack him { x = 2, y = 1 }
-            if (aroundMe[2, 1] == BlockType.Opponent)
+            // If there is a player at our right we attack him { x = 3, y = 2 }
+            if (aroundMe[3, 2] == BlockType.Opponent)
                 player.Attack(Direction.Right);
 
             // Count the players in the map
