@@ -53,6 +53,7 @@
     <Compile Include="Network\PacketType.cs" />
     <Compile Include="Network\PacketTypeFactory.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="PlayerState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AesCrypt.cs" />
   </ItemGroup>

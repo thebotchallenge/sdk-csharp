@@ -39,6 +39,8 @@ namespace Example1
             if (aroundMe[3, 2] == BlockType.Opponent)
                 player.Attack(Direction.Right);
 
+            player.Attack(Direction.Left);
+
             // Count the players in the map
             int horizontal = player.Scout(Alignment.Horizontal);
             int vertical = player.Scout(Alignment.Vertical);

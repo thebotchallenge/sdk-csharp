@@ -13,9 +13,12 @@ namespace thebotchallenge
 
         private NetworkClient network;
 
+        public PlayerState State { get; private set; }
+
         internal Player(NetworkClient network)
         {
             this.network = network;
+            this.State = PlayerState.Default;
         }
 
         /// <summary>
@@ -109,12 +112,12 @@ namespace thebotchallenge
 
         public void Defend()
         {
-
+            this.State = PlayerState.InDefendMode;
         }
 
         public void Undefend()
         {
-
+            this.State = PlayerState.Default;
         }
     }
 }
