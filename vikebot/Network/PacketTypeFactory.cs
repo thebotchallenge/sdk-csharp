@@ -8,11 +8,6 @@ namespace vikebot.Network
         {
             return BitConverter.GetBytes((short)packetType);
         }
-        internal static void ToBuffer(byte[] buffer, int offset, PacketType packetType)
-        {
-            byte[] packet = BitConverter.GetBytes((short)packetType);
-            Array.Copy(packet, 0, buffer, offset, packet.Length);
-        }
 
         internal static PacketType FromBuffer(byte[] buffer)
         {
