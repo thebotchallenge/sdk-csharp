@@ -1,4 +1,4 @@
-﻿namespace thebotchallenge.Network
+﻿namespace vikebot.Network
 {
     internal static class OverheadCalculator
     {

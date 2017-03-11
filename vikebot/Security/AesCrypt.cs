@@ -2,7 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 
-namespace thebotchallenge.Security
+namespace vikebot.Security
 {
     /// <summary>
     /// Summary description for Aes256

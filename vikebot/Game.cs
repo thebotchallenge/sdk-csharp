@@ -1,13 +1,12 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Net;
+﻿using Newtonsoft.Json;
+using System;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Security.Cryptography;
-using thebotchallenge.Network;
-using thebotchallenge.Security;
+using vikebot.Network;
+using vikebot.Security;
 
-namespace thebotchallenge
+namespace vikebot
 {
     /// <summary>
     /// <see cref="thebotchallenge.Game"/> manages all connections and authorizations for the
@@ -18,7 +17,6 @@ namespace thebotchallenge
 #endif
     public sealed class Game : IDisposable
     {
-        private string roundTicket;
         private TcpClient tcp;
         private NetworkClient network;
 
@@ -52,57 +50,45 @@ namespace thebotchallenge
         /// AES256 connection. This method must be called if autorizationToken was not passed
         /// into constructor.
         /// </summary>
-        /// <param name="authorizationToken"></param>
-        public void Authorize(string authorizationToken)
+        /// <param name="authtoken"></param>
+        public void Authorize(string authtoken)
         {
             // Set the current authtokenresolver
-            string authtokenResolver;
+            string apiURL;
 #if DEBUG
-            authtokenResolver = "localhost:2405/";
+            apiURL = "localhost:2405/v1/roundticket/";
 #else
-            authtokenResolver = "https://authtoken-resolver.thebotchallenge.com/";
+            apiURL = "https://api.vikebot.com/v1/roundticket/";
 #endif
 
-            string aes_key;
-            string aes_iv;
-            string gameServerIp;
-            int gameServerPort;
-            // Request rounticket, aes key and aes initialization vector
-            WebRequest req = HttpWebRequest.Create(authtokenResolver + authorizationToken);
-            using (Stream stream = req.GetResponse().GetResponseStream())
+            // Request roundInformation from API
+            RoundInformation ri = null;
+            using (HttpClient client = new HttpClient())
+            using (HttpResponseMessage response = client.GetAsync(apiURL + authtoken).Result)
+            using (HttpContent content = response.Content)
             {
-                using (StreamReader sr = new StreamReader(stream))
-                {
-                    this.roundTicket = sr.ReadLine();
-                    aes_key = sr.ReadLine();
-                    aes_iv = sr.ReadLine();
-                    gameServerIp = sr.ReadLine();
-                    if (!Int32.TryParse(sr.ReadLine(), out gameServerPort))
-                        throw new InvalidCastException("Unable to cast the game server's port information to a int. AuthtokenResolver protocol changed?");
-                }
+                string jsonString = content.ReadAsStringAsync().Result;
+                ri = JsonConvert.DeserializeObject<RoundInformation>(jsonString);
             }
 
-            // Establish a new tcp connection to our server
-            this.tcp = new TcpClient(gameServerIp, gameServerPort);
+            // Establish a new tcp connection to our server and create network instance
+            this.tcp = new TcpClient(AddressFamily.InterNetwork);
+            this.tcp.ConnectAsync(ri.Host, ri.Port);
+            this.network = new NetworkClient(tcp.GetStream(), new AesCrypt(ri.AesKey, ri.AesIv, CipherMode.CBC, 256, 128));
 
-            // Create network instance
-            this.network = new NetworkClient(tcp.GetStream(), new AesCrypt(aes_key, aes_iv, CipherMode.CBC, 256, 128));
-
-            // Send login credentials
-            this.network.SendBuffer(PacketTypeFactory.ToBuffer(PacketType.Login));
-            this.network.SendBuffer(Convert.FromBase64String(this.roundTicket));
-
-            // Check if we successfully authenticated
+            // Send login credentials and check if we successfully authenticated
+            this.network.SendPacketType(PacketType.Login);
+            this.network.SendBuffer(Convert.FromBase64String(ri.Ticket));
             if (this.network.ReceivePacketType() != PacketType.ACK)
                 throw new Exception();
-            
-            // Send Crypt packet in order to upgrade our connection to AES encryption
-            this.network.SendBuffer(PacketTypeFactory.ToBuffer(PacketType.Crypt));
-            this.network.IsEncrypted = true;
 
-            // Receive already encrypted server hello
+            // Send Crypt-packet to force AES encryption and receive already encrypted server hello
+            this.network.SendPacketType(PacketType.Crypt);
+            this.network.IsEncrypted = true;
             if (this.network.ReceivePacketType() != PacketType.ServerHello)
                 throw new Exception();
+
+            // TODO: Send SDK-ID
 
             // Create our player instance, so the user can access it
             this.Player = new Player(this.network);

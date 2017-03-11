@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using thebotchallenge.Network;
+using vikebot.Network;
 
-namespace thebotchallenge
+namespace vikebot
 {
 #if !DEBUG
     [DebuggerStepThrough]
@@ -67,7 +67,7 @@ namespace thebotchallenge
         /// <returns>A 5x5 matrix containing the information for the player's surrounding area</returns>
         public BlockType[,] GetSurrounding()
         {
-            this.network.SendBuffer(PacketTypeFactory.ToBuffer(PacketType.Surrounding));
+            this.network.SendPacketType(PacketType.Surrounding);
 
             PacketType response = this.network.ReceivePacketType();
             if (response != PacketType.ACK)

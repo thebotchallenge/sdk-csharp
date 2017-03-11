@@ -4,7 +4,7 @@ using System.Diagnostics;
 #if !DEBUG
     [DebuggerStepThrough]
 #endif
-namespace thebotchallenge
+namespace vikebot
 {
     public sealed class InvalidGameActionException : Exception
     {

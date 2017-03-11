@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace thebotchallenge.Network
+namespace vikebot.Network
 {
     internal static class PacketFactory
     {

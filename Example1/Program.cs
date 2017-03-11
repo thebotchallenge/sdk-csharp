@@ -1,5 +1,5 @@
 ﻿using System;
-using thebotchallenge;
+using vikebot;
 
 namespace Example1
 {
@@ -7,8 +7,6 @@ namespace Example1
     {
         static void Main(string[] args)
         {
-            // Init a new game instance with the using block in order to automatically
-            // call Dispose for our object
             using (Game game = new Game("zTxyW4q6T_vr"))
             {
                 // Run our GameProcedure method till the game has finished

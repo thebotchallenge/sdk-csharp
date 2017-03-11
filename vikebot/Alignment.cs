@@ -1,4 +1,4 @@
-﻿namespace thebotchallenge
+﻿namespace vikebot
 {
     public enum Alignment
     {

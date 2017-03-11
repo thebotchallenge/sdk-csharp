@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net.Sockets;
-using thebotchallenge.Security;
+using vikebot.Security;
 
-namespace thebotchallenge.Network
+namespace vikebot.Network
 {
     internal class NetworkClient : IDisposable
     {
@@ -64,8 +64,7 @@ namespace thebotchallenge.Network
 
         internal void SendPacketType(PacketType type)
         {
-            byte[] buffer = BitConverter.GetBytes((short)type);
-            this.SendBuffer(buffer);
+            this.SendBuffer(PacketTypeFactory.ToBuffer(type));
         }
         internal PacketType ReceivePacketType()
         {

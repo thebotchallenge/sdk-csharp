@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace thebotchallenge
+namespace vikebot
 {
 #if !DEBUG
     [DebuggerStepThrough]

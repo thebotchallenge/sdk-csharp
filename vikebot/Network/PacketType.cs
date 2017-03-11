@@ -1,23 +1,21 @@
 ﻿using System;
 
-namespace thebotchallenge.Network
+namespace vikebot.Network
 {
     internal enum PacketType
     {
+        // SERVER COMMANDS
         ACK = 1,
         NAK = 2,
-        NAKADD = 3,
-        ProxyV4 = 4,
-        ProxyV6 = 5,
-        Login = 6,
-        Crypt = 7,
-        ServerHello = 8,
-        Close = 9,
-        Version = 10,
+        InvalidPacketType = 3,
+        ServerHello = 4,
 
-        //
+        // CLIENT COMMANDS
+        Login = 50,
+        Crypt = 51,
+        SdkId = 52,
+
         // GAME COMMANDS
-        //
         Move = 100,
         Attack = 101,
         Surrounding = 102,
@@ -26,6 +24,7 @@ namespace thebotchallenge.Network
         Defend = 105,
         Undefend = 106,
 
+        // SERVER EXCEPTIONS
         ExceededGameCommandLimitation = 200,
         InvalidMove = 201,
         CannotAttackEmptyFields = 202,
