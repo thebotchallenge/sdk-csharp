@@ -23,12 +23,15 @@ namespace vikebot.Network
         Scout = 104,
         Defend = 105,
         Undefend = 106,
+        Rotate = 107,
 
         // SERVER EXCEPTIONS
-        ExceededGameCommandLimitation = 200,
-        InvalidMove = 201,
-        CannotAttackEmptyFields = 202,
-        AlreadyInDefendMode = 203,
-        NotInDefendMode = 204
+        GameEnded = 200,
+        AlreadyDied = 201,
+        ExceededGameCommandLimitation = 202,
+        InvalidMove = 203,
+        CannotAttackEmptyFields = 204,
+        AlreadyInDefendMode = 205,
+        NotInDefendMode = 206
     }
 }

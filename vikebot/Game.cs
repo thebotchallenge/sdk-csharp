@@ -3,20 +3,23 @@ using System;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Security.Cryptography;
+using System.Diagnostics;
 using vikebot.Network;
 using vikebot.Security;
 
 namespace vikebot
 {
     /// <summary>
-    /// <see cref="thebotchallenge.Game"/> manages all connections and authorizations for the
-    /// user. Also holds a current state of the active player.
+    /// <see cref="Game"/> manages all connections and authorizations for the
+    /// client. Holds all states of the active players.
     /// </summary>
 #if !DEBUG
     [DebuggerStepThrough]
 #endif
     public sealed class Game : IDisposable
     {
+        private const string SDK_ID = "";
+
         private TcpClient tcp;
         private NetworkClient network;
 
@@ -26,39 +29,27 @@ namespace vikebot
         public Player Player { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of <see cref="thebotchallenge.Game"/>. In order to receive
-        /// the <see cref="thebotchallenge.Player"/> instance you need to call <see cref="thebotchallenge.Game.Authorize(string)"/>
-        /// first.
+        /// Initializes a new instance of <see cref="Game"/>. Also authorizes you at the server and
+        /// forces a AES256-CBC encrypted connection.
         /// </summary>
-        public Game()
+        /// <param name="authToken">The authtoken you got during registering for this game.</param>
+        public Game(string authToken)
         {
             OverheadCalculator.PreCalculateOverheads(100);
+            this.Authorize(authToken);
         }
 
         /// <summary>
-        /// Initializes a new instance of <see cref="thebotchallenge.Game"/>. Also authorizes you
-        /// at the server side and changes plain text connection to encrypted AES256 connection.
+        /// Authorizes the client at the server side and changes plain text connection to encrypted
+        /// AES256 connection.
         /// </summary>
-        /// <param name="authorizationToken">The authtoken you got during registering for this game.</param>
-        public Game(string authorizationToken) : this()
-        {
-            this.Authorize(authorizationToken);
-        }
-
-        /// <summary>
-        /// Authorizes you at the server side and changes plain text connection to encrypted
-        /// AES256 connection. This method must be called if autorizationToken was not passed
-        /// into constructor.
-        /// </summary>
-        /// <param name="authtoken"></param>
-        public void Authorize(string authtoken)
+        private void Authorize(string authtoken)
         {
             // Set the current authtokenresolver
-            string apiURL;
 #if DEBUG
-            apiURL = "localhost:2405/v1/roundticket/";
+            string apiURL = "localhost:2405/v1/roundticket/";
 #else
-            apiURL = "https://api.vikebot.com/v1/roundticket/";
+            string apiURL = "https://api.vikebot.com/v1/roundticket/";
 #endif
 
             // Request roundInformation from API
@@ -74,26 +65,32 @@ namespace vikebot
             // Establish a new tcp connection to our server and create network instance
             this.tcp = new TcpClient(AddressFamily.InterNetwork);
             this.tcp.ConnectAsync(ri.Host, ri.Port);
-            this.network = new NetworkClient(tcp.GetStream(), new AesCrypt(ri.AesKey, ri.AesIv, CipherMode.CBC, 256, 128));
+            this.network = new NetworkClient(this.tcp.GetStream(), new AesHelper(ri.AesKey, ri.AesIv, CipherMode.CBC, 256, 128));
 
             // Send login credentials and check if we successfully authenticated
-            this.network.SendPacketType(PacketType.Login);
-            this.network.SendBuffer(Convert.FromBase64String(ri.Ticket));
+            this.network.SendBuffer(PacketFactory.ToBuffer(PacketType.Login, Convert.FromBase64String(ri.Ticket)));
             if (this.network.ReceivePacketType() != PacketType.ACK)
                 throw new Exception();
 
-            // Send Crypt-packet to force AES encryption and receive already encrypted server hello
+            // Send Crypt-packet to force AES encryption
             this.network.SendPacketType(PacketType.Crypt);
+            // Tell our NetworkClient that he must decrypt the next packet! - If the next packet is not encrypted
+            // the other party doesn't know our secret aes key and initialization vector hence -> unsafe connection
             this.network.IsEncrypted = true;
+            // Receive already encrypted server hello
             if (this.network.ReceivePacketType() != PacketType.ServerHello)
                 throw new Exception();
 
-            // TODO: Send SDK-ID
+            // Send SdkId
+            this.network.SendBuffer(PacketFactory.ToBuffer(PacketType.SdkId, Convert.FromBase64String(Game.SDK_ID)));
 
             // Create our player instance, so the user can access it
             this.Player = new Player(this.network);
         }
 
+        /// <summary>
+        /// Dispose all resources
+        /// </summary>
         public void Dispose()
         {
             this.network.Dispose();

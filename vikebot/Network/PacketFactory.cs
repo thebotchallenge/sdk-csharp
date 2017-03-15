@@ -4,7 +4,7 @@ namespace vikebot.Network
 {
     internal static class PacketFactory
     {
-        private static byte[] BuildBuffer(PacketType type, byte[] value)
+        internal static byte[] ToBuffer(PacketType type, byte[] value)
         {
             byte[] packet = PacketTypeFactory.ToBuffer(type);
 
@@ -18,11 +18,12 @@ namespace vikebot.Network
 
         internal static byte[] ToBuffer(PacketType type, short value)
         {
-            return BuildBuffer(type, BitConverter.GetBytes(value));
+            return ToBuffer(type, BitConverter.GetBytes(value));
         }
+
         internal static byte[] ToBuffer(PacketType type, int value)
         {
-            return BuildBuffer(type, BitConverter.GetBytes(value));
+            return ToBuffer(type, BitConverter.GetBytes(value));
         }
     }
 }

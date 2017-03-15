@@ -9,9 +9,14 @@
 
         internal static int BlockSize { get; private set; }
 
-        internal static void PreCalculateOverheads(int length)
+        static OverheadCalculator()
         {
             BlockSize = AES_BLOCKSIZE / 8;
+            blocksizef = (float)BlockSize;
+        }
+
+        internal static void PreCalculateOverheads(int length)
+        {
             cache = new int[length];
             for (int i = 0; i < cache.Length; i++)
                 cache[i] = CalculateOverhead(i);

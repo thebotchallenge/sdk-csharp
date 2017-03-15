@@ -1,5 +1,8 @@
 ﻿namespace vikebot
 {
+    /// <summary>
+    /// Represents a single block entity in the game map.
+    /// </summary>
     public enum BlockType
     {
         /// <summary>
@@ -20,12 +23,18 @@
         Opponent = 2,
 
         /// <summary>
-        /// 
+        /// Default
         /// </summary>
         Dirt = 3,
 
+        /// <summary>
+        /// Use gras to hide yourself.
+        /// </summary>
         Gras = 4,
 
+        /// <summary>
+        /// Don't run into water. You will drowning.
+        /// </summary>
         Water = 5
     }
 }

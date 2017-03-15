@@ -8,11 +8,11 @@ namespace vikebot.Network
     {
         private Random rdm;
         private NetworkStream ns;
-        private AesCrypt aes;
+        private AesHelper aes;
 
         internal bool IsEncrypted { get; set; }
 
-        internal NetworkClient(NetworkStream ns, AesCrypt aes)
+        internal NetworkClient(NetworkStream ns, AesHelper aes)
         {
             this.rdm = new Random();
             this.ns = ns;
@@ -66,6 +66,7 @@ namespace vikebot.Network
         {
             this.SendBuffer(PacketTypeFactory.ToBuffer(type));
         }
+
         internal PacketType ReceivePacketType()
         {
             byte[] buffer = new byte[2];

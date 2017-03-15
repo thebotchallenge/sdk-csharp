@@ -35,16 +35,20 @@ namespace Example1
             BlockType[,] aroundMe = player.GetSurrounding();
             // If there is a player at our right we attack him { x = 3, y = 2 }
             if (aroundMe[3, 2] == BlockType.Opponent)
-                player.Attack(Direction.Right);
+            {
+                player.Rotate(Angle.Right);
+                player.Attack();
+            }
+                
 
-            player.Attack(Direction.Left);
+            player.Attack();
 
             // Count the players in the map
             int horizontal = player.Scout(Alignment.Horizontal);
             int vertical = player.Scout(Alignment.Vertical);
 
             // Move on block upwards
-            player.Move(Direction.Up);
+            player.Move(Direction.Forward);
 
             // Change the defend mode of our player
             player.Defend();
