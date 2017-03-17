@@ -14,6 +14,7 @@ namespace vikebot.Network
         Login = 50,
         Crypt = 51,
         SdkId = 52,
+        PlayerName = 53,
 
         // GAME COMMANDS
         Move = 100,

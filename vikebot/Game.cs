@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Diagnostics;
 using vikebot.Network;
 using vikebot.Security;
+using vikebot.Encoding;
 
 namespace vikebot
 {
@@ -82,7 +83,7 @@ namespace vikebot
                 throw new Exception();
 
             // Send SdkId
-            this.network.SendBuffer(PacketFactory.ToBuffer(PacketType.SdkId, Convert.FromBase64String(Game.SDK_ID)));
+            this.network.SendBuffer(PacketFactory.ToBuffer(PacketType.SdkId, DefaultEncoding.String.GetBytes(Game.SDK_ID)));
 
             // Create our player instance, so the user can access it
             this.Player = new Player(this.network);
