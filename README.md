@@ -1,6 +1,6 @@
 <p align="center">
   <a href="#0">
-    <img src="img/logo.png" height="140px">
+    <img src="https://raw.githubusercontent.com/vikebot/wiki/master/vikebot-repo-logo.png" height="120px">
   </a>
   <br>
   <strong>Official C# SDK for interacting with Vikebot Challenge, a competitive online coding game.</strong>
@@ -32,5 +32,5 @@ class Example
 ```
 
 ### `player.Radar()`
-This command can be used to determine the amount of people within the player's action area, returned as `int` value. The zone is a 11x11 matrix with the player in it's center.
+This command can be used to determine the amount of people within the player's action area. The value is returned as `int`. The zone is a 11x11 matrix with the player in it's center.
 <br><br><img src="img/radar.png" height="300px">
