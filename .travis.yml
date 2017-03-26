@@ -1,0 +1,10 @@
+language: csharp
+mono: none
+dotnet: 1.0.1
+solution: vikebot.sln
+dist: trusty
+sudo: required
+script:
+- dotnet restore
+- dotnet publish
+- dotnet test ./vikebot.Test/vikebot.Test.csprojs
