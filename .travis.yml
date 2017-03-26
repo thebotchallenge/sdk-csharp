@@ -9,9 +9,7 @@ script:
 - dotnet publish
 - dotnet test ./vikebot.Test/vikebot.Test.csproj
 - cd vikebot
-- echo %TRAVIS_BUILD_NUMBER%
-- echo $TRAVIS_BUILD_NUMBER
-- nupkg_suffix=“"-ci%TRAVIS_BUILD_NUMBER%"“
+- nupkg_suffix="-ci$TRAVIS_BUILD_NUMBER"
 - echo $nupkg_suffix
 - dotnet pack vikebot.csproj --configuration Release --version-suffix $nupkg_suffix
 - cd bin/Release/
