@@ -52,11 +52,9 @@ namespace Example1
             // Move on block upwards
             player.Move(Direction.Forward);
 
-            
-
             // Change the defend mode of our player
-            player.Defend();
-            player.Undefend();
+            player.InDefend = true;
+            player.InDefend = false;
         }
     }
 }

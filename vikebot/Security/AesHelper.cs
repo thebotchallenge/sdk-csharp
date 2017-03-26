@@ -12,17 +12,11 @@ namespace vikebot.Security
         private Aes rijndael;
         private ICryptoTransform encryptor;
         private ICryptoTransform decryptor;
-        
-        public byte[] Key
-        {
-            get => this.rijndael.Key;
-        }
-        public byte[] IV
-        {
-            get => this.rijndael.IV;
-        }
 
-        public AesHelper(string base64Key, string base64IV, CipherMode cipherMode, int keySize, int blockSize)
+        internal byte[] Key => this.rijndael.Key;
+        internal byte[] IV => this.rijndael.IV;
+
+        internal AesHelper(string base64Key, string base64IV, CipherMode cipherMode, int keySize, int blockSize)
         {
             this.rijndael = Aes.Create();
             this.rijndael.Mode = cipherMode;
@@ -35,11 +29,11 @@ namespace vikebot.Security
             this.decryptor = this.rijndael.CreateDecryptor(this.rijndael.Key, this.rijndael.IV);
         }
 
-        public byte[] Encrypt(byte[] plain)
+        internal byte[] Encrypt(byte[] plain)
         {
             return this.InternalCrypt(plain, this.encryptor);
         }
-        public byte[] Decrypt(byte[] cipher)
+        internal byte[] Decrypt(byte[] cipher)
         {
             return this.InternalCrypt(cipher, this.decryptor);
         }
