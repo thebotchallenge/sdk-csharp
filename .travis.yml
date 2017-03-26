@@ -7,4 +7,8 @@ sudo: required
 script:
 - dotnet restore
 - dotnet publish
-- dotnet test ./vikebot.Test/vikebot.Test.csprojs
+- dotnet test ./vikebot.Test/vikebot.Test.csproj
+- cd vikebot
+- dotnet pack vikebot.csproj --configuration Release --version-suffix "-ci%TRAVIS_BUILD_NUMBER%"
+- cd bin/Release/
+- ls -l
