@@ -4,9 +4,6 @@ dotnet: 1.0.1
 dist: trusty
 sudo: required
 
-install:
-- sudo apt-get install nuget
-
 solution: vikebot.sln
 
 script:
