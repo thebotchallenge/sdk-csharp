@@ -1,9 +1,14 @@
 language: csharp
 mono: none
 dotnet: 1.0.1
-solution: vikebot.sln
 dist: trusty
 sudo: required
+
+install:
+- sudo apt-get install nuget
+
+solution: vikebot.sln
+
 script:
 - dotnet restore
 - dotnet publish
@@ -12,3 +17,5 @@ script:
 - dotnet pack vikebot/vikebot.csproj --configuration Release --version-suffix $nupkg_suffix
 - cd vikebot/bin/Release/
 - ls -l
+- nuget
+- nuget list vikebot -allversions -prerelease
