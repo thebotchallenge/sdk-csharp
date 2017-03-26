@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text;
+using vikebot.Encoding;
 using vikebot.Network;
 
 namespace vikebot
@@ -13,12 +15,57 @@ namespace vikebot
     public sealed class Player
     {
         private NetworkClient network;
+        private bool inDefend;
+        private string name;
 
         /// <summary>
-        /// The direction this player is currently looking
+        /// The direction this player is currently watching
         /// </summary>
         public Direction WatchDirection { get; private set; }
-        
+
+        /// <summary>
+        /// The name that will be rendered for this player instance. Only available in team challenges where
+        /// the users account name isn't a unique identifier.
+        /// </summary>
+        public string Name
+        {
+            get => this.name;
+            set
+            {
+                byte[] nameBuffer = DefaultEncoding.String.GetBytes(value);
+                this.network.SendBuffer(PacketFactory.ToBuffer(PacketType.PlayerName, nameBuffer));
+
+                PacketType response = this.network.ReceivePacketType();
+                if (response != PacketType.ACK)
+                {
+                    this.ThrowCommonExceptions(response);
+                }
+
+                this.name = value;
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the user is in defend mode. Can only be changed once every 4 seconds. If activated the
+        /// player cannot move.
+        /// </summary>
+        public bool InDefend
+        {
+            get => this.inDefend;
+            set
+            {
+                this.network.SendPacketType(value ? PacketType.Defend : PacketType.Undefend);
+                PacketType response = this.network.ReceivePacketType();
+
+                if (response != PacketType.ACK)
+                {
+                    this.ThrowCommonExceptions(response);
+                }
+
+                this.inDefend = value;
+            }
+        }
+
         internal Player(NetworkClient network)
         {
             this.network = network;
@@ -36,15 +83,13 @@ namespace vikebot
             }
         }
 
-
+        /// <summary>
+        /// Rotates the player in the specified direction definded by a <see cref="Angle"/> type
+        /// </summary>
+        /// <param name="angle">The angle in which the player will rotate. Can ether be <see cref="Angle.Right"/> or <see cref="Angle.Left"/>.</param>
         public void Rotate(Angle angle)
         {
-            if (!Enum.IsDefined(typeof(Angle), (short)angle))
-            {
-                throw new ArgumentException();
-            }
-
-            this.network.SendBuffer(PacketFactory.ToBuffer(PacketType.Rotate, (short)angle));
+            this.network.SendBuffer(PacketFactory.ToBuffer(PacketType.Rotate, (int)angle));
 
             PacketType response = this.network.ReceivePacketType();
             if (response != PacketType.ACK)
@@ -52,6 +97,7 @@ namespace vikebot
                 this.ThrowCommonExceptions(response);
             }
 
+            // Server accepted request -> update local properties 
             if (angle == Angle.Right)
             {
                 this.WatchDirection++;
@@ -103,6 +149,11 @@ namespace vikebot
             }
         }
 
+        public void Watch()
+        {
+
+        }
+
         /// <summary>
         /// Scans the surrounding area of the player and returns a 5x5 matrix of <see cref="BlockType"/>
         /// with the found information. If the area is not accessible by the player <see cref="BlockType.EndOfMap"/>
@@ -151,16 +202,6 @@ namespace vikebot
         public int Scout(Alignment alignment)
         {
             throw new NotImplementedException();
-        }
-
-        public void Defend()
-        {
-            
-        }
-
-        public void Undefend()
-        {
-            
         }
     }
 }

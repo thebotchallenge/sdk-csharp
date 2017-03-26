@@ -14,6 +14,8 @@ namespace Example1
                 {
                     while (true)
                         GameProcedure(game.Player);
+
+
                 }
                 catch (GameEndedException)
                 {
@@ -49,6 +51,8 @@ namespace Example1
 
             // Move on block upwards
             player.Move(Direction.Forward);
+
+            
 
             // Change the defend mode of our player
             player.Defend();

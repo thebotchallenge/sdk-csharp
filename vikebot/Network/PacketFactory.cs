@@ -16,11 +16,6 @@ namespace vikebot.Network
             return buffer;
         }
 
-        internal static byte[] ToBuffer(PacketType type, short value)
-        {
-            return ToBuffer(type, BitConverter.GetBytes(value));
-        }
-
         internal static byte[] ToBuffer(PacketType type, int value)
         {
             return ToBuffer(type, BitConverter.GetBytes(value));
