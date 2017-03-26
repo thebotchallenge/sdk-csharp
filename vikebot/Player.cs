@@ -14,6 +14,9 @@ namespace vikebot
     {
         private NetworkClient network;
 
+        /// <summary>
+        /// The direction this player is currently looking
+        /// </summary>
         public Direction WatchDirection { get; private set; }
         
         internal Player(NetworkClient network)
@@ -92,8 +95,10 @@ namespace vikebot
             if (response != PacketType.ACK)
             {
                 if (response == PacketType.CannotAttackEmptyFields)
-                    throw new InvalidGameActionException("You cannot attack empty fields. The block in your attack direction must be an opponent (BlockType.Opponent)");
-
+                {
+                    throw new InvalidGameActionException("You cannot attack empty fields. The block in your watch direction must be an opponent (BlockType.Opponent)");
+                }
+                    
                 this.ThrowCommonExceptions(response);
             }
         }
