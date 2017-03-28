@@ -1,18 +1,21 @@
 language: csharp
 mono: none
-dotnet: 1.0.1
-solution: vikebot.sln
 dist: trusty
 sudo: required
+
+dotnet: 1.0.1
+
+solution: vikebot.sln
+
 script:
 - dotnet restore
 - dotnet publish
 - dotnet test ./vikebot.Test/vikebot.Test.csproj
-- cd vikebot
-- echo %TRAVIS_BUILD_NUMBER%
-- echo $TRAVIS_BUILD_NUMBER
-- nupkg_suffix=“"-ci%TRAVIS_BUILD_NUMBER%"“
-- echo $nupkg_suffix
-- dotnet pack vikebot.csproj --configuration Release --version-suffix $nupkg_suffix
-- cd bin/Release/
+- nupkg_suffix="-ci$TRAVIS_BUILD_NUMBER"
+- dotnet pack vikebot/vikebot.csproj --configuration Release --version-suffix $nupkg_suffix
+- cd vikebot/bin/Release/
 - ls -l
+
+after_script:
+- nuget
+- nuget list vikebot -allversions -prerelease
