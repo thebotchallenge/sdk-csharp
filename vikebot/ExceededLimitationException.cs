@@ -3,12 +3,15 @@ using System.Diagnostics;
 
 namespace vikebot
 {
+    /// <summary>
+    /// Thrown when you exceed a limitation for any action.
+    /// </summary>
 #if !DEBUG
     [DebuggerStepThrough]
 #endif
     public sealed class ExceededLimitationException : Exception
     {
-        public ExceededLimitationException(string message) : base(message)
+        internal ExceededLimitationException(string message) : base(message)
         {
         }
     }

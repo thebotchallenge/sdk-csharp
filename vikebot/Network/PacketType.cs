@@ -19,7 +19,7 @@ namespace vikebot.Network
         // GAME COMMANDS
         Move = 100,
         Attack = 101,
-        Surrounding = 102,
+        WatchEnvironment = 102,
         Radar = 103,
         Scout = 104,
         Defend = 105,

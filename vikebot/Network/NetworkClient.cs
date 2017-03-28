@@ -62,6 +62,13 @@ namespace vikebot.Network
                 this.ns.Read(buffer, 0, buffer.Length);
         }
 
+        internal byte[] ReceiveBuffer(int length)
+        {
+            byte[] buffer = new byte[length];
+            this.ReceiveBuffer(buffer);
+            return buffer;
+        }
+
         internal void SendPacketType(PacketType type)
         {
             this.SendBuffer(PacketTypeFactory.ToBuffer(type));

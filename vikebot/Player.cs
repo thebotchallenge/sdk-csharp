@@ -136,7 +136,7 @@ namespace vikebot
         public void Attack()
         {
             this.network.SendPacketType(PacketType.Attack);
-            
+
             PacketType response = this.network.ReceivePacketType();
             if (response != PacketType.ACK)
             {
@@ -144,25 +144,29 @@ namespace vikebot
                 {
                     throw new InvalidGameActionException("You cannot attack empty fields. The block in your watch direction must be an opponent (BlockType.Opponent)");
                 }
-                    
+
                 this.ThrowCommonExceptions(response);
             }
         }
 
-        public void Watch()
+        /// <summary>
+        /// Scans the surrounding area of the player and returns the position of enemies (<see cref="BlockType.Opponent"/>)
+        /// </summary>
+        /// <returns></returns>
+        public BlockType[,] Watch()
         {
-
+            throw new NotImplementedException();
         }
 
         /// <summary>
         /// Scans the surrounding area of the player and returns a 5x5 matrix of <see cref="BlockType"/>
         /// with the found information. If the area is not accessible by the player <see cref="BlockType.EndOfMap"/>
-        /// will be passed. If it's an enemy <see cref="BlockType.Opponent"/> will be passed.
+        /// will be passed. This method won't tell you if there is an enemy (<see cref="BlockType.Opponent"/>).
         /// </summary>
-        /// <returns>A 5x5 matrix containing the information for the player's surrounding area</returns>
-        public BlockType[,] GetSurrounding()
+        /// <returns>A 11x11 matrix containing the information for the player's surrounding area</returns>
+        public BlockType[,] WatchEnvironment()
         {
-            this.network.SendPacketType(PacketType.Surrounding);
+            this.network.SendPacketType(PacketType.WatchEnvironment);
 
             PacketType response = this.network.ReceivePacketType();
             if (response != PacketType.ACK)
@@ -173,33 +177,56 @@ namespace vikebot
                 this.ThrowCommonExceptions(response);
             }
 
-            byte[] buffer = new byte[50];
-            this.network.ReceiveBuffer(buffer);
+            byte[] buffer = this.network.ReceiveBuffer(484);
 
-            BlockType[,] result = new BlockType[5, 5];
+            BlockType[,] result = new BlockType[11, 11];
 
             Type blockType = typeof(BlockType);
-            for (int i = 0; i < 25; i++)
+            int sizeOfInt32 = sizeof(int);
+            for (int i = 0; i < 484; i += sizeOfInt32)
             {
-                byte[] currentBytePair = new byte[2];
-                Array.Copy(buffer, i * 2, currentBytePair, 0, currentBytePair.Length);
-                short value = Convert.ToInt16(currentBytePair);
+                byte[] currentBytePair = new byte[sizeOfInt32];
+                Array.Copy(buffer, i * sizeOfInt32, currentBytePair, 0, sizeOfInt32);
+
+                int value = Convert.ToInt32(currentBytePair);
 
                 if (!Enum.IsDefined(blockType, value))
+                {
                     throw new Exception();
+                }
 
-                result[i / 5, i % 5] = (BlockType)value;
+                result[i / result.GetLength(0), i % result.GetLength(0)] = (BlockType)value;
             }
 
             return result;
         }
 
+        /// <summary>
+        /// Counts the amount of enemies (<see cref="BlockType.Opponent"/>) in the player's action area. Value is returned
+        /// as an int value.
+        /// </summary>
+        /// <returns>Amount of enemies inside the users action area.</returns>
         public int Radar()
         {
-            throw new NotImplementedException();
+            this.network.SendPacketType(PacketType.Radar);
+
+            PacketType response = this.network.ReceivePacketType();
+            if (response == PacketType.ACK)
+            {
+                this.ThrowCommonExceptions(response);
+            }
+
+            byte[] buffer = this.network.ReceiveBuffer(4);
+            int value = Convert.ToInt32(buffer);
+
+            return value;
         }
 
-        public int Scout(Alignment alignment)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public int Scout()
         {
             throw new NotImplementedException();
         }
