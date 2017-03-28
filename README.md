@@ -4,6 +4,11 @@
   </a>
   <br>
   <strong>Official C# SDK for interacting with Vikebot Challenge, a competitive online coding game.</strong>
+  <br>
+  <br>
+  <a href="https://travis-ci.org/vikebot/sdk-csharp">
+    <img src="https://travis-ci.org/vikebot/sdk-csharp.svg?branch=master">
+  </a>
 </p>
 
 ## Join your game
