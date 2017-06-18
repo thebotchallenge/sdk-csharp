@@ -41,6 +41,10 @@ class Example
 }
 ```
 
+**See your results:**
+
+If you want to see a graphical representation of the game's current state (e.g. your player moving while you execute your bot code) you can use the open websocket protocol to receive special preprossed data that can be easily rendered. For all people who don't want to do this on their one we have a reference implementation running in the browser on https://watch.vikebot.com/watch-token. The `watch-token` can again be copied from your dashboard.
+
 ### `playerInstance.Radar()`
 This command can be used to determine the amount of people within the player's action area. The value is returned as `int`. The zone is a 11x11 matrix with the player in it's center.
 <br><br><img src="img/radar.png" height="300px">
