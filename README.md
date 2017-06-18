@@ -33,12 +33,14 @@ class Example
     {
         using (Game g = new Game("yourAuthCode"))
         {
-            int opponentsInMyArea = g.player.Radar();
+            Player playerInstance = g.Player;
+            
+            int opponentsInMyArea = playerInstance.Radar();
         }
     }
 }
 ```
 
-### `player.Radar()`
+### `playerInstance.Radar()`
 This command can be used to determine the amount of people within the player's action area. The value is returned as `int`. The zone is a 11x11 matrix with the player in it's center.
 <br><br><img src="img/radar.png" height="300px">
