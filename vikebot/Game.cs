@@ -50,7 +50,7 @@ namespace vikebot
 #if DEBUG
             string apiURL = "localhost:2405/v1/roundticket/";
 #else
-            string apiURL = "https://api.vikebot.com/v1/roundticket/";
+            string apiURL = "https://api.vikebot.com/v1/roundticket/json/";
 #endif
 
             // Request roundInformation from API
@@ -65,8 +65,10 @@ namespace vikebot
 
             // Establish a new tcp connection to our server and create network instance
             this.tcp = new TcpClient(AddressFamily.InterNetwork);
-            this.tcp.ConnectAsync(ri.Host, ri.Port);
+            this.tcp.ConnectAsync(ri.HostV4, ri.Port);
             this.network = new NetworkClient(this.tcp.GetStream(), new AesHelper(ri.AesKey, ri.AesIv, CipherMode.CBC, 256, 128));
+
+            Console.WriteLine(Convert.FromBase64String(ri.Ticket).Length);
 
             // Send login credentials and check if we successfully authenticated
             this.network.SendBuffer(PacketFactory.ToBuffer(PacketType.Login, Convert.FromBase64String(ri.Ticket)));

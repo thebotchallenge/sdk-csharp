@@ -7,7 +7,7 @@ namespace Example1
     {
         static void Main(string[] args)
         {
-            using (Game game = new Game("zTxyW4q6T_vr"))
+            using (Game game = new Game("APuXKetgdgehcNvsEs"))
             {
                 try
                 {

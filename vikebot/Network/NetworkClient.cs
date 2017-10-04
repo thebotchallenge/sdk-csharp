@@ -76,7 +76,7 @@ namespace vikebot.Network
 
         internal PacketType ReceivePacketType()
         {
-            byte[] buffer = new byte[2];
+            byte[] buffer = new byte[4];
             this.ReceiveBuffer(buffer);
 
             return PacketTypeFactory.FromBuffer(buffer);

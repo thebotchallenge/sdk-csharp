@@ -33,7 +33,7 @@ namespace vikebot
             set
             {
                 byte[] nameBuffer = DefaultEncoding.String.GetBytes(value);
-                this.network.SendBuffer(PacketFactory.ToBuffer(PacketType.PlayerName, nameBuffer));
+                this.network.SendBuffer(PacketFactory.ToBuffer(PacketType.Name, nameBuffer));
 
                 PacketType response = this.network.ReceivePacketType();
                 if (response != PacketType.ACK)
@@ -54,7 +54,7 @@ namespace vikebot
             get => this.inDefend;
             set
             {
-                this.network.SendPacketType(value ? PacketType.Defend : PacketType.Undefend);
+                this.network.SendPacketType(PacketType.InDefend);
                 PacketType response = this.network.ReceivePacketType();
 
                 if (response != PacketType.ACK)

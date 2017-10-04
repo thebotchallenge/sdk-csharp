@@ -6,12 +6,12 @@ namespace vikebot.Network
     {
         internal static byte[] ToBuffer(PacketType packetType)
         {
-            return BitConverter.GetBytes((short)packetType);
+            return BitConverter.GetBytes((int)packetType);
         }
 
         internal static PacketType FromBuffer(byte[] buffer)
         {
-            short packetTypeId = BitConverter.ToInt16(buffer, 0);
+            int packetTypeId = BitConverter.ToInt32(buffer, 0);
 
             if (!Enum.IsDefined(typeof(PacketType), packetTypeId))
                 throw new Exception();
